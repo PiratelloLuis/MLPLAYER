@@ -1,0 +1,44 @@
+def nav_to_image(image, clicks, off_x=0, off_y=0):
+    position = pt.locateOnScreen(image, confidence=.7)
+    if position is None:
+        print(f'{image} not found...')
+        return 0
+    else:
+        pt.moveTo(position, duration=.1)
+        pt.moveRel(off_x, off_y)
+        pt.click(clicks=clicks, interval=.3)
+
+
+def move_character(key_press, duration, action='walking'):
+    pt.keyDown(key_press)
+
+    if action == 'walking':
+        print("Walking")
+    elif action == 'attack':
+        pt.keyDown('x')
+    sleep(duration)
+    pt.keyUp('x')
+    pt.keyUp(key_press)
+
+
+def locate_lava():
+    position = pt.locateOnScreen('images/lava/lava.png', confidence=.5)
+    if position is None:
+        return False
+    else:
+        move_character('s', 2)
+        print('found lava!')
+        return True
+##
+
+sleep(3)
+nav_to_image('images/menu/start_game.png', 3)
+duration = 100
+while duration != 0:
+    if not locate_lava():
+        move_character('w',2.5, 'attack')
+    else:
+        break
+    duration -=1
+    print("Time remaning =", duration)
+
